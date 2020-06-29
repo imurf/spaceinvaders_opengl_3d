@@ -1,0 +1,10 @@
+TODO
+----
+
+29-05-2020
+1 - implement the vector2, transforms, and matrix classes - the idea is that transforms will provide
+an easy to use interface to store positions and rotations, as well as modify them. Want to store
+the rotation part and the translation part seperate in the transforms. Can then give all actors a
+transform rather than seperate position, and rotation angles. Will then have a seperate matrix
+class that can be constructed from a transform (2d and 3d). The seperate matrix class will provide
+opengl compatibility - so will have a flatten function so it can be loaded directly into opengl.

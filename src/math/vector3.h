@@ -10,17 +10,15 @@
 
 struct Vector3
 {
-  enum Type {direction, point};
-
   real_t x = {0};
   real_t y = {0};
   real_t z = {0};
-  int w = {0};
 
   /* constructors */
 
   _FORCE_INLINE_ Vector3(){}
-  _FORCE_INLINE_ Vector3(real_t x, real_t y, real_t z, enum Type w = point) : x{x}, y{y}, z{z} {w = w;}
+  _FORCE_INLINE_ Vector3(real_t x, real_t y, real_t z) : x{x}, y{y}, z{z} {}
+  _FORCE_INLINE_ Vector3(Vector2 v) : x{v.getx()}, y{v.gety()}{}
 
   /* methods */
 
@@ -64,15 +62,11 @@ struct Vector3
   _FORCE_INLINE_ void sety(real_t y) {y=y;}
   _FORCE_INLINE_ void setz(real_t z) {z=z;}
 
-  _FORCE_INLINE_ void set_type(enum Type w) {w=w;}
-
   /* accessors */
 
   _FORCE_INLINE_ real_t getx() const {return x;}
   _FORCE_INLINE_ real_t gety() const {return y;}
   _FORCE_INLINE_ real_t getz() const {return z;}
-
-  _FORCE_INLINE_ int get_type() const {return w;}
 };
 
 std::ostream& operator<<(std::ostream& os, const Vector3& v);
@@ -114,8 +108,7 @@ Vector3 Vector3::cross(const Vector3& b) const
   return Vector3{
     ((y * b.z) - (z * b.y)),
     ((z * b.x) - (x * b.z)),
-    ((x * b.y) - (y * b.x)),
-    static_cast<Type>(w * b.w)
+    ((x * b.y) - (y * b.x))
   };
 }
 
@@ -126,43 +119,35 @@ real_t Vector3::dot(const Vector3& b) const
 
 Vector3& Vector3::operator+=(const Vector3& b)
 {
-  assert(!(w == point && b.w == point));
   x += b.x;
   y += b.y;
   z += b.z;
-  w += b.w;
   return *this;
 }
 
 Vector3 Vector3::operator+(const Vector3& b) const
 {
-  assert(!(w == point && b.w == point));
   return Vector3{
     (x + b.x),
     (y + b.y),
-    (z + b.z),
-    static_cast<Type>(w + b.w)
+    (z + b.z)
   };
 }
 
 Vector3& Vector3::operator-=(const Vector3& b)
 {
-  assert(!(w == direction && b.w == point));
   x -= b.x;
   y -= b.y;
   z -= b.z;
-  w -= b.w;
   return *this;
 }
 
 Vector3 Vector3::operator-(const Vector3& b) const
 {
-  assert(!(w == direction && b.w == point));
   return Vector3{
     (x - b.x),
     (y - b.y),
-    (z - b.z),
-    static_cast<Type>(w - b.w)
+    (z - b.z)
   };
 }
 
@@ -179,8 +164,7 @@ Vector3 Vector3::operator*(const Vector3& b) const
   return Vector3{
     (x * b.x),
     (y * b.y),
-    (z * b.z),
-    static_cast<Type>(w)
+    (z * b.z)
   };
 }
 
@@ -197,8 +181,7 @@ Vector3 Vector3::operator/(const Vector3& b) const
   return Vector3{
     (x / b.x),
     (y / b.y),
-    (z / b.z),
-    static_cast<Type>(w)
+    (z / b.z)
   };
 }
 
@@ -221,8 +204,7 @@ Vector3 Vector3::operator*(real_t scalar) const
   return Vector3{
     (x * scalar),
     (y * scalar),
-    (z * scalar),
-    static_cast<Type>(w)
+    (z * scalar)
   };
 }
 
@@ -239,24 +221,23 @@ Vector3 Vector3::operator/(real_t scalar) const
   return Vector3{
     (x / scalar),
     (y / scalar),
-    (z / scalar),
-    static_cast<Type>(w)
+    (z / scalar)
   };
 }
 
 Vector3 Vector3::operator-() const
 {
-  return Vector3{-x, -y, -z, static_cast<Type>(w)};
+  return Vector3{-x, -y, -z};
 }
 
 bool Vector3::operator==(const Vector3& b) const
 {
-  return (x == b.x) && (y == b.y) && (z == b.z) && (w == b.w);
+  return (x == b.x) && (y == b.y) && (z == b.z);
 }
 
 bool Vector3::operator!=(const Vector3& b) const
 {
-  return (x != b.x) || (y != b.y) || (z != b.z) || (w != b.w);
+  return (x != b.x) || (y != b.y) || (z != b.z);
 }
 
 Vector3& Vector3::operator=(const Vector3& b)
@@ -264,7 +245,6 @@ Vector3& Vector3::operator=(const Vector3& b)
   x = b.x;
   y = b.y;
   z = b.z;
-  w = b.w;
   return *this;
 }
 
@@ -274,7 +254,6 @@ std::ostream& operator<<(std::ostream& os, const Vector3& v)
      << "]{x:" << v.getx()     \
      << ", y:" << v.gety()     \
      << ", z:" << v.getz()     \
-     << ", w:" << v.get_type() \
      << "}"                    \
      << std::endl;
   return os;
